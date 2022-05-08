@@ -7,20 +7,23 @@ const { getDb } = require("../controlCountry")
 
 routes.post('/', async (req, res) => {
     const { name, difficulty, duration, season, countries } = req.body;
-    const createAct = await Activity.create({
-        name,
-        difficulty,
-        duration,
-        season,
-    })
-    const actDb = await Country.findAll({
-         where: {
-             name: countries
-         }
-    })
-    createAct.addActivity(actDb)
-    res.status(200).send("Activity created successfully.")
-    console.log(createAct);
+    try {
+        const createAct = await Activity.create({
+            name,
+            difficulty,
+            duration,
+            season
+        })
+        const actDb = await Country.findAll({
+            where: {
+                name: countries
+            }
+        })
+        createAct.addActivity(actDb);
+        res.status(200).send("Activity created successfully.").res.status(404).send("Could not create activity.");
+    } catch (error) {
+        res.status(404).send('Error');
+    }  
 })
 
 // routes.post('/', async(req, res) => {
